@@ -1,31 +1,41 @@
 package limiter
 
-import "errors"
+import (
+	"errors"
+	"fmt"
+	"log"
+
+	"github.com/google/uuid"
+)
+
+var ErrorEmptyBucket = errors.New("Bucket has no more tokens")
 
 type Bucket struct {
-	Count    int32
-	Capacity int32
+	id       string
+	owner    string
+	count    int32
+	capacity int32
 }
 
-var errBucketIsEmpty = errors.New("Bucket has no more tokens")
-
-func NewBucket(capacity int32) *Bucket {
-	return &Bucket{Count: capacity, Capacity: capacity}
+func NewBucket(owner string, capacity int32) *Bucket {
+	return &Bucket{id: uuid.New().String(), owner: owner, capacity: capacity, count: capacity}
 }
 
 func (bucket Bucket) IsEmpty() bool {
-	return bucket.Count == 0
+	return bucket.count == 0
 }
 
 func (bucket *Bucket) RemoveToken() error {
 	if bucket.IsEmpty() {
-		return errBucketIsEmpty
+		msg, _ := fmt.Printf("Bucket %s belonging to %s has no more tokens", bucket.id, bucket.owner)
+		log.Println(msg)
+		return ErrorEmptyBucket
 	} else {
-		bucket.Count--
+		bucket.count--
 		return nil
 	}
 }
 
 func (bucket *Bucket) RefillTokens() {
-	bucket.Count = bucket.Capacity
+	bucket.count = bucket.capacity
 }
