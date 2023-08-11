@@ -9,14 +9,14 @@ import (
 
 type RedisConfig struct {
 	Address  string `json:"address"`
-	Password string `json:"password"`
 	Database int    `json:"database"`
 }
 
 type RateLimiterConfig struct {
-	Capacity         int32  `json:"capacity"`
-	RefreshTime      string `json:"refresh_time"`
-	FlushBucketsTime string `json:"flush_buckets_time"`
+	Capacity          int32  `json:"capacity"`
+	Expiration        int32  `json:"expiration"`
+	TokensRefreshTime string `json:"tokens_refresh_time"`
+	FlushBucketsTime  string `json:"flush_buckets_time"`
 }
 
 type Config struct {
