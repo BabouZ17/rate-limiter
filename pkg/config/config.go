@@ -28,11 +28,14 @@ func NewConfig() Config {
 	path := os.Getenv("CONFIG_PATH")
 	content, err := os.Open(path)
 	if err != nil {
-		log.Fatalf("Could not open %s", path)
+		log.Panicf("Could not open %s", path)
 	}
 	defer content.Close()
 
-	byteValue, _ := io.ReadAll(content)
+	byteValue, err := io.ReadAll(content)
+	if err != nil {
+		log.Panic("Could not read config")
+	}
 
 	var config Config
 	json.Unmarshal(byteValue, &config)

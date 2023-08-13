@@ -1,6 +1,7 @@
 package limiter
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"sync"
@@ -43,7 +44,7 @@ func (lm *InMemoryLimiterMiddleware) Middleware(next http.Handler) http.Handler 
 
 		if bucket, found := lm.buckets[requestor]; found {
 			err := bucket.RemoveToken()
-			if err == ErrBucketEmpty {
+			if errors.Is(err, ErrBucketEmpty) {
 				http.Error(w, fmt.Sprintf("Too many requests sent :(, sorry %s", requestor), http.StatusTooManyRequests)
 			} else {
 				next.ServeHTTP(w, r)

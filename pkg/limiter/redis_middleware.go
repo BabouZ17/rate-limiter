@@ -1,7 +1,6 @@
 package limiter
 
 import (
-	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -22,16 +21,18 @@ func (lm *RedisLimiterMiddleware) Middleware(next http.Handler) http.Handler {
 		requestor := r.Header.Get("X-Requestor")
 
 		err := lm.rr.RemoveToken(requestor)
-		if errors.Is(err, ErrBucketNotFound) {
+		if e, ok := err.(*ErrRedisRepository); ok && e.Err == ErrBucketNotFound {
 			if err := lm.rr.AddBucket(requestor, lm.capacity, lm.expiration); err != nil {
-				log.Fatal(err)
+				log.Panic(err)
 			}
 			if err := lm.rr.RemoveToken(requestor); err != nil {
-				log.Fatal(err)
+				log.Panic(err)
 			}
 			next.ServeHTTP(w, r)
-		} else if errors.Is(err, ErrBucketEmpty) {
+		} else if e, ok = err.(*ErrRedisRepository); ok && e.Err == ErrBucketEmpty {
 			http.Error(w, fmt.Sprintf("Too many requests sent :(, sorry %s", requestor), http.StatusTooManyRequests)
+		} else if err != nil {
+			http.Error(w, fmt.Sprintf("Internal error, %s", err), http.StatusInternalServerError)
 		} else {
 			next.ServeHTTP(w, r)
 		}

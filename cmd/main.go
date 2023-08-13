@@ -37,10 +37,10 @@ func initializeRedisLimiter(cfg config.Config) *limiter.RedisLimiterMiddleware {
 
 func main() {
 	cfg := config.NewConfig()
-	limiter := initializeRedisLimiter(cfg)
+	limiter := initializeInMemoryRateLimiter(cfg)
 
 	r := mux.NewRouter()
 	r.HandleFunc("/", handler.HomeHandler)
 	r.Use(limiter.Middleware)
-	log.Fatal(http.ListenAndServe(":8080", r))
+	log.Panic(http.ListenAndServe(":8080", r))
 }
