@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/BabouZ17/rate-limiter/pkg/config"
-	"github.com/google/uuid"
 	"github.com/redis/go-redis/v9"
 )
 
@@ -50,7 +49,6 @@ func NewRedisRepository(c config.Config) *RedisRepository {
 
 func (rr *RedisRepository) AddBucket(owner string, capacity int32, expiration int32) error {
 	// Store new key in the Sorted Set with expiration time time.Now() + expiration
-	id := uuid.New().String()
 
 	expiration_delta := float64(expiration)
 	expiration_time := expiration_delta + float64(time.Now().Unix())
@@ -62,7 +60,6 @@ func (rr *RedisRepository) AddBucket(owner string, capacity int32, expiration in
 
 	// Store the bucket data into a hash
 	if _, err := rr.redis.Pipelined(ctx, func(redis redis.Pipeliner) error {
-		redis.HSet(ctx, owner, "id", id)
 		redis.HSet(ctx, owner, "owner", owner)
 		redis.HSet(ctx, owner, "capacity", capacity)
 		redis.HSet(ctx, owner, "count", capacity)
@@ -97,7 +94,7 @@ func (rr *RedisRepository) GetBucket(owner string) (*Bucket, error) {
 		return nil, NewErrRedisRepository(fmt.Sprintf("could not load the bucket %s", owner), err)
 	}
 
-	if bucket.Id == "" {
+	if bucket.Owner == "" {
 		return nil, NewErrRedisRepository(fmt.Sprintf("could not find the bucket %s", owner), ErrBucketNotFound)
 	}
 	return &bucket, nil
