@@ -1,0 +1,12 @@
+{
+    "redis": {
+        "address": "redis:6379",
+        "database": 0
+    },
+    "rate_limiter": {
+        "capacity": 10,
+        "expiration": 600,
+        "tokens_refresh_time": "0 * * * *",
+        "flush_buckets_time": "0 */5 * * *"
+    }
+}

@@ -1,0 +1,7 @@
+{
+    "rate_limiter": {
+        "capacity": 10,
+        "tokens_refresh_time": "0 * * * *",
+        "flush_buckets_time": "0 */5 * * *"
+    }
+}
