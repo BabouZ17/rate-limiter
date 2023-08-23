@@ -77,6 +77,7 @@ func (rr *RedisRepository) RemoveToken(owner string) error {
 	}
 
 	if bucket.Count == 0 {
+		log.Printf("bucket belonging to %s has no more tokens", bucket.Owner)
 		return NewErrRedisRepository(fmt.Sprintf("bucket %s has no more tokens", owner), ErrBucketEmpty)
 	} else {
 		bucket.Count--
@@ -109,6 +110,7 @@ func (rr *RedisRepository) RefillBucket(owner string) error {
 	if err != nil {
 		return NewErrRedisRepository(fmt.Sprintf("could not refill bucket %s", owner), err)
 	}
+	log.Printf("refilled bucket %s", bucket.Owner)
 	return nil
 }
 
@@ -132,6 +134,7 @@ func (rr *RedisRepository) DeleteBucket(owner string) error {
 	if _, err := rr.redis.ZRem(ctx, BUCKETS_SET_KEY, owner).Result(); err != nil {
 		return NewErrRedisRepository(fmt.Sprintf("failed to remove key %s from set", owner), err)
 	}
+	log.Printf("deleted bucket %s", owner)
 	return nil
 }
 

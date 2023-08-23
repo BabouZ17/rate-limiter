@@ -16,15 +16,15 @@ services:
       - "8081:8081"
     depends_on:
       - redis
-  # rate-limiter:
-  #   container_name: rate-limiter
-  #   build: ../
-  #   environment:
-  #     - CONFIG_PATH=/app/config/config.json
-  #   ports:
-  #     - "8080:8080"
-  #   depends_on:
-  #     - redis
+  rate-limiter:
+    container_name: rate-limiter
+    build: ../
+    environment:
+      - CONFIG_PATH=/app/config/config.json
+    ports:
+      - "8080:8080"
+    depends_on:
+      - redis
 
 volumes:
   redis_volume: null

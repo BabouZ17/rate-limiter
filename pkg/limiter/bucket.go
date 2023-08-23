@@ -23,7 +23,7 @@ func (bucket Bucket) IsEmpty() bool {
 
 func (bucket *Bucket) RemoveToken() error {
 	if bucket.IsEmpty() {
-		log.Printf("Bucket belonging to %s has no more tokens", bucket.Owner)
+		log.Printf("bucket belonging to %s has no more tokens", bucket.Owner)
 		return ErrBucketEmpty
 	} else {
 		bucket.Count--
@@ -32,5 +32,6 @@ func (bucket *Bucket) RemoveToken() error {
 }
 
 func (bucket *Bucket) RefillTokens() {
+	log.Printf("refilled bucket %s", bucket.Owner)
 	bucket.Count = bucket.Capacity
 }

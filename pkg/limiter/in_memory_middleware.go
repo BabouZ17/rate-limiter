@@ -3,6 +3,7 @@ package limiter
 import (
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 	"sync"
 )
@@ -36,6 +37,7 @@ func (lm *InMemoryLimiterMiddleware) DeleteBuckets() {
 	lm.mu.Lock()
 	lm.buckets = make(map[string]*Bucket)
 	lm.mu.Unlock()
+	log.Println("deleted all buckets")
 }
 
 func (lm *InMemoryLimiterMiddleware) Middleware(next http.Handler) http.Handler {

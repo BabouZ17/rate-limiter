@@ -37,7 +37,7 @@ func initializeRedisLimiter(cfg config.Config) *limiter.RedisLimiterMiddleware {
 
 func main() {
 	cfg := config.NewConfig()
-	limiter := initializeInMemoryRateLimiter(cfg)
+	limiter := initializeRedisLimiter(cfg)
 
 	r := mux.NewRouter()
 	r.HandleFunc("/", handler.HomeHandler)

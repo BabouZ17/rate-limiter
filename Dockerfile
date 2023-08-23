@@ -4,6 +4,7 @@ WORKDIR /app
 
 COPY go.mod ./
 COPY go.sum ./
+COPY config/redis_config.json /app/config/config.json
 
 RUN go mod download
 

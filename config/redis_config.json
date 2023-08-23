@@ -1,6 +1,6 @@
 {
     "redis": {
-        "address": "localhost:6379",
+        "address": "redis:6379",
         "database": 0
     },
     "rate_limiter": {
